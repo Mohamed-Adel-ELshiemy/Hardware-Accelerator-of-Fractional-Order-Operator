@@ -30,7 +30,7 @@ begin
     begin
 //        temp = (2^24)*beta;
 //        temp1 = temp[55:24];
-        temp2 = Signal - PrevSig;
+        temp2 = Signal - Prev_Sig;
         temp = temp2 *alpha;
         temp2 = temp[55:24];
         temp2 = temp2 + Signal;
