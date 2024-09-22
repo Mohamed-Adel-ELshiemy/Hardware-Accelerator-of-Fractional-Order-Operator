@@ -2,50 +2,51 @@
 
 module Deform_Frac(
 
-input clk, Rst_n,
-input  [31:0] Signal,
-output reg [31:0] Output,
-output reg OutInd
+input             clk_100HZ, Rst_n,
+input      [31:0] Signal_i,
+output reg [31:0] Output_o,
+output reg        OutInd_o
 );
 
-reg signed [63:0] temp;
-reg signed [31:0] temp1;
-reg signed [31:0] temp2;
-reg signed [31:0] Prev_Sig;
-integer Step_Beta = 16861102;
-integer alpha = 8388608; // .5 *2^24
-integer step =   167770; // .01 *2^24
-integer beta = 8388608; // (1- alpha)
+reg signed [63:0] temp0_reg;
+reg signed [31:0] temp1_reg;
+reg signed [31:0] temp2_reg;
+reg signed [31:0] Prev_Sig_reg;
+/*Conestant needed values*/    
+integer STEP_BETA = 16861102;
+integer ALPHA = 8388608; // .5 *2^24
+integer STEP =   167770; // .01 *2^24
+integer BETA = 8388608; // (1- ALPHA)
 
 
 initial 
 begin
-Prev_Sig = 0;
-OutInd = 0;
+Prev_Sig_reg = 0;
+OutInd_o = 0;
 
 end
-always @ (posedge clk)
+always @ (posedge clk_100HZ)
 begin
     if (!Rst_n)
     begin
-//        temp = (2^24)*beta;
-//        temp1 = temp[55:24];
-        temp2 = Signal - Prev_Sig;
-        temp = temp2 *alpha;
-        temp2 = temp[55:24];
-        temp2 = temp2 + Signal;
-        temp = temp2*Step_Beta;
-        temp1 = temp[55:24];
-        temp2 = temp1-Signal;
-        temp = temp2*100;
-        Output = temp[31:0];
-        Prev_Sig = Signal;
-//        temp = temp1<<24;
-//        Output = temp/step;      
-        OutInd = ~OutInd;  
-        if ((Output) == -49028  )
+        //        temp0_reg = (2^24) * BETA;
+//        temp1_reg = temp0_reg[55:24];
+        temp2_reg = Signal_i - Prev_Sig_reg;
+        temp0_reg = temp2_reg * ALPHA;
+        temp2_reg = temp0_reg[55:24];
+        temp2_reg = temp2_reg + Signal_i;
+        temp0_reg = temp2_reg * STEP_BETA;
+        temp1_reg = temp0_reg[55:24];
+        temp2_reg = temp1_reg - Signal_i;
+        temp0_reg = temp2_reg * 100;
+        Output_o = temp0_reg[31:0];
+        Prev_Sig_reg = Signal_i;
+//        temp0_reg = temp1_reg << 24;
+//        Output_o = temp0_reg / STEP;      
+        OutInd_o = ~OutInd_o;  
+        if ((Output_o) == -49028  )
         begin
-         $display("Out: %d \n",$signed(Output));
+         $display("Out: %d \n",$signed(Output_o));
         end
         
     end
