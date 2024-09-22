@@ -1,12 +1,11 @@
-
+`timescale 1ns/1ps
 
 module Deform_Frac(
-
-input             clk_100HZ, Rst_n,
-input      [31:0] Signal_i,
-output reg [31:0] Output_o,
-output reg        OutInd_o
-);
+                    input             clk_100HZ, Rst_n,
+                    input      [31:0] Signal_i,
+                    output reg [31:0] Output_o,
+                    output reg        OutInd_o
+                   );
 
 reg signed [63:0] temp0_reg;
 reg signed [31:0] temp1_reg;
@@ -29,8 +28,6 @@ always @ (posedge clk_100HZ)
 begin
     if (!Rst_n)
     begin
-//      temp0_reg = (2^24) * BETA;
-//      temp1_reg = temp0_reg[55:24];
         temp2_reg = Signal_i - Prev_Sig_reg;
         temp0_reg = temp2_reg * ALPHA;
         temp2_reg = temp0_reg[55:24];
@@ -40,9 +37,7 @@ begin
         temp2_reg = temp1_reg - Signal_i;
         temp0_reg = temp2_reg * 100;
         Output_o = temp0_reg[31:0];
-        Prev_Sig_reg = Signal_i;
-//      temp0_reg = temp1_reg << 24;
-//      Output_o = temp0_reg / STEP;      
+        Prev_Sig_reg = Signal_i;      
         OutInd_o = ~OutInd_o;  
         if ((Output_o) == -49028  )
         begin
